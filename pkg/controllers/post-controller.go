@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"fmt"
+	"math"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/J-Nokwal/ihar_backend/pkg/models"
 	"github.com/gin-gonic/gin"
@@ -78,12 +81,71 @@ func GetAllPostByUserId(c *gin.Context) {
 		liked, err := models.CheckIfLiked(&j.ID, byUser)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "code": "1002"}) // error: "exctraction error"
+			return
 		}
 		j.Liked = *liked
 	}
 	c.JSON(http.StatusOK, posts)
 
 }
+
+func GetPostByPageIdByUser(c *gin.Context) {
+	var pageSize int64 = 10
+	pageId, err := strconv.Atoi(c.Param("pageId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "parameter is not int", "code": "1004"}) // error: "params are not int"
+	}
+	var beforeDateTime time.Time
+	var noOfPages int64
+	if pageId < 1 {
+		count, err := models.CountPosts()
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "code": "1002"}) // error: "exctraction error"
+			return
+		}
+		// noOfPages = math.Ceil(*count / pageSize)
+		noOfPages = int64(math.Ceil(float64(*count) / float64(pageSize)))
+
+		pageId = 0
+		fmt.Println(noOfPages)
+		beforeDateTime = time.Now()
+	} else {
+		var e error
+		queryTime := c.Query("queryTime")
+		if queryTime == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "queryTime must not be empty if pageId > 0", "code": "1004"}) // error: "queryTime not valid"
+			return
+		}
+		// beforeDateTime, e = time.Parse(time.RFC3339, queryTime)
+		beforeDateTime, e = time.Parse(time.RFC1123, queryTime)
+		if e != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid time", "code": "1004"})
+			return
+		}
+	}
+	byUser := c.Param("byUser")
+	posts, err := models.GetPostByPageId(int(pageSize)*pageId, int(pageSize), beforeDateTime)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "code": "1002"}) // error: "exctraction error"
+		return
+	}
+
+	for _, j := range posts {
+		liked, err := models.CheckIfLiked(&j.ID, byUser)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "code": "1002"}) // error: "exctraction error"
+			return
+		}
+		j.Liked = *liked
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"posts":     posts,
+		"queryTime": beforeDateTime.Format(time.RFC1123),
+		"noOfPages": noOfPages,
+	})
+
+}
+
 func PatchPost(c *gin.Context) {
 	var post models.Post
 	if err := c.ShouldBindJSON(&post); err != nil {

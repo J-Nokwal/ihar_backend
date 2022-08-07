@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -34,13 +35,28 @@ func (post *Post) CreatePost() (*Post, error) {
 
 func GetAllPost() ([]Post, error) {
 	var posts []Post
-	if errList := db.Preload("User").Find(&posts).GetErrors(); len(errList) != 0 {
+	if errList := db.Preload("User").Order("created_at DESC").Find(&posts).GetErrors(); len(errList) != 0 {
 		fmt.Println("11111111", errList)
 		return nil, fmt.Errorf("exctraction error")
 	}
 	return posts, nil
 }
-
+func GetPostByPageId(offset int, pageSize int, beforeDateTime time.Time) ([]Post, error) {
+	var posts []Post
+	if errList := db.Preload("User").Limit(pageSize).Offset(offset).Order("created_at DESC").Where("created_at < ?", beforeDateTime).Find(&posts).GetErrors(); len(errList) != 0 {
+		fmt.Println("11111111", errList)
+		return nil, fmt.Errorf("exctraction error")
+	}
+	return posts, nil
+}
+func GetPostForSearchQuery(searchQuery string) ([]Post, error) {
+	var posts []Post
+	if errList := db.Preload("User").Order("created_at DESC").Where("message  LIKE ?", "%"+searchQuery+"%").Find(&posts).GetErrors(); len(errList) != 0 {
+		fmt.Println("11111111", errList)
+		return nil, fmt.Errorf("exctraction error")
+	}
+	return posts, nil
+}
 func GetAllPostFromUser(id string) ([]Post, error) {
 	var posts []Post
 	if errList := db.Where("user_id=?", id).Find(&posts).GetErrors(); len(errList) != 0 {
@@ -57,6 +73,15 @@ func GetPostById(Id int) (*Post, error) {
 		return nil, fmt.Errorf("exctraction error")
 	}
 	return &GetPost, nil
+}
+
+func CountPosts() (*int64, error) {
+	var count int64
+	if errList := db.Model(&Post{}).Count(&count).GetErrors(); len(errList) != 0 {
+		fmt.Println("error while counting", errList)
+		return nil, fmt.Errorf("exctraction error")
+	}
+	return &count, nil
 }
 
 func UpdatePost(post Post) (*Post, error) {

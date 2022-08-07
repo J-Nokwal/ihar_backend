@@ -61,6 +61,17 @@ func GetUserById(Id string) (*User, error) {
 	return &GetUser, nil
 }
 
+func GetUsersForSearchQuery(searchQuery string) (*[]User, error) {
+	searchQuery = "%" + searchQuery + "%"
+	var GetUsers []User
+	err := db.Where("first_name LIKE ? OR last_name LIKE ?  OR id LIKE ?", searchQuery, searchQuery, searchQuery).Find(&GetUsers).GetErrors()
+	if len(err) != 0 {
+		fmt.Println(err)
+		return nil, fmt.Errorf("error while searching")
+	}
+	return &GetUsers, nil
+}
+
 func UpdateUser(user User) (*User, error) {
 	// var user User
 	d := db.Model(&user).Where("id=?", user.ID).Update(user)

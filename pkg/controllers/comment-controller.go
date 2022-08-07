@@ -45,7 +45,7 @@ func DeleteComment(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "parameter is not int", "code": "1004"}) // error: "params are not int"
 		return
 	}
-	err = models.DeletePost(commentId)
+	err = models.DeleteComment(commentId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err, "code": "1006"}) // error: "params are not int"
 		return

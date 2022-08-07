@@ -15,6 +15,7 @@ var RegisterBookStoreRoutes = func(router *gin.Engine) {
 	router.GET("/post/:id/:byUser", controllers.GetPostForUser)
 	router.GET("/post/all/OfUser/:ofUser/:byUser", controllers.GetAllPostOfUserByUserId)
 	router.GET("/post/all/:byUser", controllers.GetAllPostByUserId)
+	router.GET("/post/byPage/:pageId/:byUser", controllers.GetPostByPageIdByUser)
 
 	router.PATCH("/post", controllers.PatchPost)
 	router.DELETE("/post/:id", controllers.DeletePost)
@@ -26,4 +27,6 @@ var RegisterBookStoreRoutes = func(router *gin.Engine) {
 
 	router.POST("/like", controllers.TriggerLike)
 	router.GET("/like/byPostId/:postId", controllers.GetUsersByPostLikes)
+
+	router.GET("/search/:searchQuery/:byUser", controllers.GetSearchQueryResults)
 }
