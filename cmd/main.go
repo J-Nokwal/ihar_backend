@@ -10,32 +10,51 @@ import (
 
 func main() {
 	r := gin.Default()
+
 	routes.RegisterBookStoreRoutes(r)
+	// r.Use(cors.New(cors.Config{
+	// 	// AllowOrigins:     []string{"http://localhost:30090", "http://192.168.18.29:46590"},
+	// 	AllowMethods:     []string{http.MethodGet, http.MethodPatch, http.MethodPost, http.MethodHead, http.MethodDelete, http.MethodOptions},
+	// 	AllowHeaders:     []string{"Content-Type", "X-XSRF-TOKEN", "Accept", "Origin", "X-Requested-With", "Authorization"},
+	// 	ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin"},
+	// 	AllowCredentials: true,
+	// 	// AllowOriginFunc: func(origin string) bool {
+	// 	// 	fmt.Println(origin)
+	// 	// 	return true
+	// 	// },
+	// 	AllowAllOrigins: true,
+	// }))
+
+	// r.Use(cors.New(cors.Config{
+	// 	// AllowOrigins:     []string{"http://localhost:30090", "http://192.168.18.29:46590"},
+	// 	AllowMethods:           []string{"*"},
+	// 	AllowHeaders:           []string{"*"},
+	// 	ExposeHeaders:          []string{"*"},
+	// 	MaxAge:                 time.Second * 5,
+	// 	AllowWildcard:          true,
+	// 	AllowBrowserExtensions: true,
+	// 	AllowFiles:             true,
+	// 	AllowWebSockets:        true,
+	// 	AllowCredentials:       true,
+	// 	// AllowOriginFunc: func(origin string) bool {
+	// 	// 	fmt.Println(origin)
+	// 	// 	return true
+	// 	// },
+	// 	AllowAllOrigins: true,
+	// }))
 	r.Use(cors.New(CORSConfig()))
 	// r.Use(cors.Default())
 	r.Run()
 
 }
 func CORSConfig() cors.Config {
-	// corsConfig := cors.DefaultConfig()
+	corsConfig := cors.DefaultConfig()
 	// corsConfig.AllowOrigins = []string{"*"}
-	// corsConfig.AllowCredentials = true
-	// corsConfig.AddAllowHeaders("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers", "Content-Type", "X-XSRF-TOKEN", "Accept", "Origin", "X-Requested-With", "Authorization")
-	// corsConfig.AddAllowMethods("GET", "POST", "PUT", "DELETE")
-	// // corsConfig.AllowAllOrigins = true
-	// corsConfig.AllowOriginFunc(func (s string )bool {return true})
-	// return corsConfig
-	return cors.Config{
-		// AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders:     []string{"Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers", "Content-Type", "X-XSRF-TOKEN", "Accept", "Origin", "X-Requested-With", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		// AllowOriginFunc: func(origin string) bool {
-		// 	fmt.Println(origin)
-		// 	return true
-		// },
-		AllowWildcard:   true,
-		AllowAllOrigins: true,
-	}
+	corsConfig.AllowCredentials = true
+	corsConfig.AddAllowHeaders("Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "access-control-allow-origin, access-control-allow-headers", "Content-Type", "X-XSRF-TOKEN", "Accept", "Origin", "X-Requested-With", "Authorization")
+	corsConfig.AddAllowMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+	// corsConfig.AllowAllOrigins = true
+	corsConfig.AllowOrigins = []string{"*"}
+	return corsConfig
+
 }

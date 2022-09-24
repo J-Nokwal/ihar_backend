@@ -9,6 +9,7 @@ import (
 )
 
 func TriggerLike(c *gin.Context) {
+
 	var likes models.Likes
 	if err := c.ShouldBindJSON(&likes); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json", "code": "1000"})
@@ -42,6 +43,7 @@ func TriggerLike(c *gin.Context) {
 }
 
 func GetUsersByPostLikes(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	postId, err := strconv.Atoi(c.Param("postId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "parameter is not int", "code": "1004"}) // error: "params are not int"

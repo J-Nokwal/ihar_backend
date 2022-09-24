@@ -12,6 +12,7 @@ import (
 )
 
 func CreatePost(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	var post models.Post
 	if err := c.ShouldBindJSON(&post); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json", "code": "1000"})
@@ -28,6 +29,7 @@ func CreatePost(c *gin.Context) {
 	c.JSON(http.StatusOK, post)
 }
 func GetPostForUser(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	postId, err := strconv.Atoi(c.Param("id"))
 	byUser := c.Param("byUser")
 	if err != nil {
@@ -49,6 +51,7 @@ func GetPostForUser(c *gin.Context) {
 	c.JSON(http.StatusOK, post)
 }
 func GetAllPostOfUserByUserId(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	byUser := c.Param("byUser")
 	ofUser := c.Param("ofUser")
 
@@ -58,17 +61,18 @@ func GetAllPostOfUserByUserId(c *gin.Context) {
 		return
 	}
 
-	for _, j := range posts {
+	for i, j := range posts {
 		liked, err := models.CheckIfLiked(&j.ID, byUser)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "code": "1002"}) // error: "exctraction error"
 		}
-		j.Liked = *liked
+		posts[i].Liked = *liked
 	}
 	c.JSON(http.StatusOK, posts)
 
 }
 func GetAllPostByUserId(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	byUser := c.Param("byUser")
 
 	posts, err := models.GetAllPost()
@@ -77,19 +81,20 @@ func GetAllPostByUserId(c *gin.Context) {
 		return
 	}
 
-	for _, j := range posts {
+	for i, j := range posts {
 		liked, err := models.CheckIfLiked(&j.ID, byUser)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "code": "1002"}) // error: "exctraction error"
 			return
 		}
-		j.Liked = *liked
+		posts[i].Liked = *liked
 	}
 	c.JSON(http.StatusOK, posts)
 
 }
 
 func GetPostByPageIdByUser(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	var pageSize int64 = 10
 	pageId, err := strconv.Atoi(c.Param("pageId"))
 	if err != nil {
@@ -130,13 +135,13 @@ func GetPostByPageIdByUser(c *gin.Context) {
 		return
 	}
 
-	for _, j := range posts {
+	for i, j := range posts {
 		liked, err := models.CheckIfLiked(&j.ID, byUser)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "code": "1002"}) // error: "exctraction error"
 			return
 		}
-		j.Liked = *liked
+		posts[i].Liked = *liked
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"posts":     posts,
@@ -147,6 +152,7 @@ func GetPostByPageIdByUser(c *gin.Context) {
 }
 
 func PatchPost(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	var post models.Post
 	if err := c.ShouldBindJSON(&post); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json", "code": "1000"})
@@ -160,6 +166,7 @@ func PatchPost(c *gin.Context) {
 	c.JSON(http.StatusOK, u)
 }
 func DeletePost(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "parameter is not int", "code": "1004"}) // error: "params are not int"

@@ -24,11 +24,9 @@ func (post *Post) CreatePost() (*Post, error) {
 	if errList := db.Create(&post).GetErrors(); len(errList) != 0 {
 		fmt.Println(errList)
 		return nil, fmt.Errorf("error while insertion")
-
 	}
 	user := User{}
 	fmt.Println("11111111", db.Model(&post).Related(&user, "user_id").GetErrors())
-
 	// post4.Posting_User = user
 	return post, nil
 }
@@ -51,12 +49,13 @@ func GetPostByPageId(offset int, pageSize int, beforeDateTime time.Time) ([]Post
 }
 func GetPostForSearchQuery(searchQuery string) ([]Post, error) {
 	var posts []Post
-	if errList := db.Preload("User").Order("created_at DESC").Where("message  LIKE ?", "%"+searchQuery+"%").Find(&posts).GetErrors(); len(errList) != 0 {
+	if errList := db.Preload("User").Limit(10).Where("message  LIKE ?", "%"+searchQuery+"%").Find(&posts).GetErrors(); len(errList) != 0 {
 		fmt.Println("11111111", errList)
 		return nil, fmt.Errorf("exctraction error")
 	}
 	return posts, nil
 }
+
 func GetAllPostFromUser(id string) ([]Post, error) {
 	var posts []Post
 	if errList := db.Where("user_id=?", id).Find(&posts).GetErrors(); len(errList) != 0 {
@@ -68,7 +67,7 @@ func GetAllPostFromUser(id string) ([]Post, error) {
 
 func GetPostById(Id int) (*Post, error) {
 	var GetPost Post
-	if errList := db.Where("id=?", Id).Find(&GetPost).GetErrors(); len(errList) != 0 {
+	if errList := db.Preload("User").Where("id=?", Id).Find(&GetPost).GetErrors(); len(errList) != 0 {
 		fmt.Println("11111111", errList)
 		return nil, fmt.Errorf("exctraction error")
 	}
@@ -100,7 +99,6 @@ func DeletePost(Id int) error {
 	if len(errList) != 0 {
 		fmt.Println("111111", errList)
 		return fmt.Errorf("error while deleting")
-
 	}
 	return nil
 }

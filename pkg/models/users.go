@@ -8,11 +8,11 @@ import (
 type User struct {
 	ID               string `json:"userId" gorm:"primaryKey;NOT NULL"`
 	IsAnoymous       bool   `json:"is_anaoymous" gorm:"type:bool;default:true"`
-	Email            string `json:"email" gorm:"type:varchar(100)"`
-	ProfileLink      string `jsnon:"profile_link" gorm:"type:varchar(100)"`
-	ProfilePhotoLink string `jsnon:"profile_link" gorm:"type:varchar(100)"`
-	FirstName        string `jsnon:"first_name" gorm:"type:varchar(100)"`
-	LastName         string `jsnon:"last_name" gorm:"type:varchar(100)"`
+	Email            string `json:"email" gorm:"type:varchar(200)"`
+	ProfileLink      string `jsnon:"profile_link" gorm:"type:MEDIUMTEXT"`
+	ProfilePhotoLink string `jsnon:"profile_link" gorm:"type:MEDIUMTEXT"`
+	FirstName        string `jsnon:"first_name" gorm:"type:varchar(1200)"`
+	LastName         string `jsnon:"last_name" gorm:"type:varchar(1200)"`
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 	DeletedAt        *time.Time `sql:"index"`
@@ -64,7 +64,7 @@ func GetUserById(Id string) (*User, error) {
 func GetUsersForSearchQuery(searchQuery string) (*[]User, error) {
 	searchQuery = "%" + searchQuery + "%"
 	var GetUsers []User
-	err := db.Where("first_name LIKE ? OR last_name LIKE ?  OR id LIKE ?", searchQuery, searchQuery, searchQuery).Find(&GetUsers).GetErrors()
+	err := db.Limit(10).Where("first_name LIKE ? OR last_name LIKE ?  OR id LIKE ?", searchQuery, searchQuery, searchQuery).Find(&GetUsers).GetErrors()
 	if len(err) != 0 {
 		fmt.Println(err)
 		return nil, fmt.Errorf("error while searching")

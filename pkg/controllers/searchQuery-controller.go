@@ -8,6 +8,7 @@ import (
 )
 
 func GetSearchQueryResults(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	searchQuery := c.Param("searchQuery")
 	if searchQuery == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "searchQuery cant be empty or null", "code": "1004"}) // error:  "searchQuery cant be empty or null"
@@ -19,13 +20,13 @@ func GetSearchQueryResults(c *gin.Context) {
 		return
 	}
 
-	for _, j := range posts {
+	for i, j := range posts {
 		liked, err := models.CheckIfLiked(&j.ID, byUser)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "code": "1002"}) // error: "exctraction error"
 			return
 		}
-		j.Liked = *liked
+		posts[i].Liked = *liked
 	}
 
 	users, err := models.GetUsersForSearchQuery(searchQuery)

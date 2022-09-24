@@ -29,4 +29,8 @@ var RegisterBookStoreRoutes = func(router *gin.Engine) {
 	router.GET("/like/byPostId/:postId", controllers.GetUsersByPostLikes)
 
 	router.GET("/search/:searchQuery/:byUser", controllers.GetSearchQueryResults)
+
+	router.GET("/isServerOnline", controllers.IsServerOnline)
+
+	router.POST("/report", controllers.ReportUserOrPost)
 }

@@ -9,6 +9,7 @@ import (
 )
 
 func CreateComment(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	var comment models.Comment
 	if err := c.ShouldBindJSON(&comment); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json", "code": "1000"})
@@ -18,14 +19,16 @@ func CreateComment(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "error while insertion, userId or postId or message is null", "code": "1001"})
 		return
 	}
-	if _, err := comment.CreateComment(); err != nil {
+	returnComment, err := comment.CreateComment()
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "code": "1001"}) // error: "error while insertion"
 		return
 	}
-	c.JSON(http.StatusOK, comment)
+	c.JSON(http.StatusOK, returnComment)
 
 }
 func GetAllCommentFromPost(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	postId, err := strconv.Atoi(c.Param("postId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "parameter is not int", "code": "1004"}) // error: "params are not int"
@@ -39,6 +42,7 @@ func GetAllCommentFromPost(c *gin.Context) {
 	c.JSON(http.StatusOK, comments)
 }
 func DeleteComment(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 
 	commentId, err := strconv.Atoi(c.Param("commentId"))
 	if err != nil {
@@ -53,6 +57,7 @@ func DeleteComment(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 func PatchComment(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	var comment models.Comment
 	if err := c.ShouldBindJSON(&comment); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json", "code": "1000"})

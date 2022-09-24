@@ -22,6 +22,7 @@ func (comment *Comment) CreateComment() (*Comment, error) {
 	}
 	user := User{}
 	fmt.Println("11111111", db.Model(&comment).Related(&user, "user_id").GetErrors())
+	comment.User = user
 	return comment, nil
 }
 

@@ -3,12 +3,14 @@ package controllers
 import (
 	"math/rand"
 	"net/http"
+	"time"
 
 	"github.com/J-Nokwal/ihar_backend/pkg/models"
 	"github.com/gin-gonic/gin"
 )
 
 func CreateUser(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json", "code": "1000"})
@@ -29,6 +31,8 @@ func CreateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 func GetUser(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+
 	id := c.Param("id")
 	// var user models.User
 	user, err := models.GetUserById(id)
@@ -39,6 +43,7 @@ func GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 func PatchUser(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json", "code": "1000"})
@@ -57,6 +62,7 @@ func PatchUser(c *gin.Context) {
 }
 
 func getRandomUserName() string {
+	rand.Seed(time.Now().UnixNano())
 	usernames := []string{"Coeliac", "Gruntled", "Gunnage", "Typhoon", "Jacobin", "DrongoMayhem", "Laciniate", "Disemvowel", "Fissicostate", "PuppypuppFard", "Apodictic", "Gibberish", "Pachynsis", "CandleMufti", "Urinator", "Blackguard", "Oppilate", "Candelabra", "ChetchetRivel", "Caterwaul", "Cathexis", "Flyspeck", "Nigrescence", "GampodPuss", "Petcock", "LordkurDander", "Hemitery", "BitiamPogo", "Berline", "Gongoozle", "Isomorph", "Hillbilly", "RedthecZurla", "Hodgepodge", "VeldomVatic", "AcrilKazoo", "Shrouds", "Canoodle", "GtminingAstrut", "Zeitgeist", "Sinister", "Pandemonium", "Dinglewong", "Fribble", "Opinable", "Spelunker", "Corbeil", "Ambrosial", "Limousja0303", "Hullabaloo", "Dicerous", "Grudgemental", "Zoochorous", "Foxy", "Astrobolism", "Cahoots", "Thionine", "Cattitude", "Presidial", "Kerfuffle", "Conureger2226", "Kaput", "Volacious", "Slosh", "Stupereezmc", "Skullet", "Planation", "Salpiglossis", "Homophyly", "Piffling", "Vigneron", "Occiput", "Argentreef2000", "Borborygmous", "Abodement", "HoiPolloi", "Flenchheed808", "Shrubbery", "Stolon_bard", "Kahikatea"}
 	randomIndex := rand.Intn(len(usernames))
 	pick := usernames[randomIndex]
