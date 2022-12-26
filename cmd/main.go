@@ -4,13 +4,19 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
+
 	// "net/http"
 	"github.com/J-Nokwal/ihar_backend/pkg/routes"
 )
 
 func main() {
-	r := gin.Default()
 
+	r := gin.Default()
+	store := cookie.NewStore([]byte("secret"))
+	store.Options(sessions.Options{MaxAge: 60 * 60 * 24, Secure: true}) // expire in a day
+	r.Use(sessions.Sessions("mysession", store))
 	routes.RegisterBookStoreRoutes(r)
 	// r.Use(cors.New(cors.Config{
 	// 	// AllowOrigins:     []string{"http://localhost:30090", "http://192.168.18.29:46590"},
@@ -45,6 +51,7 @@ func main() {
 	r.Use(cors.New(CORSConfig()))
 	// r.Use(cors.Default())
 	r.Run()
+	// r.RunTLS(":443", "/cert.pem", "/key.pem")
 
 }
 func CORSConfig() cors.Config {

@@ -8,6 +8,7 @@ import (
 
 func IsServerOnline(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
+	// c.Cookie()
 	// fmt.Println()
 	// c.Status(http.)
 	c.JSON(http.StatusOK, gin.H{"status": "okkk"})

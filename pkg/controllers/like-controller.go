@@ -9,7 +9,7 @@ import (
 )
 
 func TriggerLike(c *gin.Context) {
-
+	c.Header("Access-Control-Allow-Origin", "*")
 	var likes models.Likes
 	if err := c.ShouldBindJSON(&likes); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json", "code": "1000"})
