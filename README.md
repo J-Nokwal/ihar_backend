@@ -12,6 +12,8 @@ photos and things they heard about and want to spread that rumor.
 
 mobile App on Flutter : [GitHub Repo](https://github.com/J-Nokwal/ihar_flutter)
 
+Website on React : [GitHub Repo](https://github.com/J-Nokwal/ihar_website)
+
 ## Tech Stack
 
 **Client:** Flutter React
