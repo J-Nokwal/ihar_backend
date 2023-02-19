@@ -6,7 +6,7 @@ import (
 )
 
 var RegisterBookStoreRoutes = func(router *gin.Engine) {
-
+	//user apis
 	router.POST("/user", controllers.CreateUser)
 	router.GET("/user/:id", controllers.GetUser)
 	router.PATCH("/user", controllers.PatchUser)
